@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
+using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
@@ -12,10 +13,11 @@ namespace WebApplication1.Controllers
     [Route("api/answers")]
     public class TaskAnswerController : Controller
     {
-        private ApplicationContext db;
-        public TaskAnswerController(ApplicationContext context)
+        private IStorageService _storageService;
+
+        public TaskAnswerController(IStorageService storageService)
         {
-            db = context;
+            _storageService = storageService;
         }
 
         // GET api/answers
@@ -23,7 +25,7 @@ namespace WebApplication1.Controllers
         public ActionResult Get()
         {
             // получаем объекты из бд
-            var taskAnswers = db.TaskAnswers.ToList();
+            var taskAnswers = _storageService.GetAllTaskAnswers();
             return Ok(taskAnswers);
         }
 
@@ -33,8 +35,7 @@ namespace WebApplication1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.TaskAnswers.Add(taskAnswer);
-                db.SaveChanges();
+                _storageService.StoreTaskAnswer(taskAnswer);
                 return Ok("Success");
             }
             else

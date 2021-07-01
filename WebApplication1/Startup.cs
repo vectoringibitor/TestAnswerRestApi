@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WebApplication1.Models;
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Services;
 
 namespace WebApplication1
 {
@@ -30,6 +31,7 @@ namespace WebApplication1
             // добавляем контекст MobileContext в качестве сервиса в приложение
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseNpgsql(connection));
+            services.AddTransient<IStorageService, StorageService>();
             services.AddMvc();
         }
 
